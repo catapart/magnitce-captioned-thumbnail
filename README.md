@@ -5,6 +5,7 @@ Package size: ~6kb minified, ~8kb verbose.
 
 ## Quick Reference
 ```html
+<captioned-thumbnail src="./smile.png" edit select>Smile</captioned-thumbnail>
 <script type="module" src="/path/to/captioned-thumbnail[.min].js"></script>
 ```
 
