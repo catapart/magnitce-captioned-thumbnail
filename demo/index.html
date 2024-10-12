@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Captioned Thumbnail Demo</title>
+    <link rel="stylesheet" href="./demo-page.css">
+</head>
+<body>
+    <main>
+        <h1>Overview</h1>
+        <div class="overview">
+            <p>The <code>&lt;captioned-thumbnail&gt;</code> element is meant to mimic a popular item display layout used in Operating Systems like Windows, MacOS, iOS, and Android.</p>
+            <p>It includes functionality to provide selection status, dispatch selection and editing events, and be manipulated by both pointers and keyboards.</p>
+        </div>
+        <h1>Examples</h1>
+        <article class="basic">
+            <header>Basic Examples</header>
+                <p>The <code>&lt;captioned-thumbnail&gt;</code> element is strictly visual element, by default. It is not selectable, and does not display sub-elements like a checkbox to indicate selection, or an edit button to allow edit invoking.</p>                
+            </div>
+            <div class="example">
+                <div class="default">
+                    <header>Default</header>
+                    <p>In this example, the thumbnail is given no attributes, and no child content.</p>
+                    <captioned-thumbnail></captioned-thumbnail>
+                </div>
+                <div class="edit">
+                    <header>Edit</header>
+                    <p>In this example, the thumbnail has an <code>edit</code> attribute, and the text <code>Editable Item</code> as its child content.</p>
+                    <p>Note that while the item will display an edit button, it is still not selectable.</p>
+                    <captioned-thumbnail edit>Editable Item</captioned-thumbnail>
+                </div>
+                <div class="select">
+                    <header>Select</header>
+                    <p>In this example, the thumbnail has a <code>select</code> attribute, and the text <code>Selectable Item</code> as its child content.</p>
+                    <p>Note that while the item can be selected, it does not display an edit button.</p>
+                    <captioned-thumbnail select>Selectable Item</captioned-thumbnail>
+                </div>
+            </div>
+        </article>
+        <article class="customization">
+            <header>Customization</header>
+            <div class="description">
+                <p>The <code>&lt;captioned-thumbnail&gt;</code> element can be customized in multiple ways, including via attributes, slots, or directly styling its parts.</p>
+            </div>
+            <div class="example">
+                <div class="image-src">
+                    <header>Custom Icon - Image Source</header>
+                    <p>This example uses a custom icon by providing a valid path to the <code>&lt;captioned-thumbnail&gt;</code> element's <code>src</code> attribute. The example also has text content of <code>smile</code> which is used as the caption text.</p>
+                    <captioned-thumbnail src="./smile.png" edit select>smile</captioned-thumbnail>
+                </div>
+                <div class="icon-slot">
+                    <header>Custom Icon - SVG</header>
+                    <p>In this example, an <code>&lt;svg&gt;</code> element is provided for the <code>icon</code> slot, which replaces the icon with an <code>&lt;svg&gt;</code> element.</p>
+                    <captioned-thumbnail edit select>
+                        <svg slot="icon" class="icon gear" viewBox="0 0 22.812714 22.814663" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+                            <path
+                            style="fill:var(--icon-primary-color,InfoText);fill-opacity:1;stroke:var(--icon-secondary-color,InfoBackground);stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;stop-color:#000000"
+                            d="m 16.427119,1.7236663 c -0.04201,-0.030363 -0.09197,-0.0081 -0.13494,0.027216 l -2.542428,2.092726 A 8.0066645,8.0066666 0.07978599 0 0 12.700072,3.587311 l -1.32925,-3.00282785 c -0.01379,-0.031878 -0.03339,-0.059706 -0.05792,-0.074523 -0.01453,-0.00916 -0.03218,-0.012136 -0.0512,-0.00947 L 8.1090776,1.0093593 c -0.050929,0.00839 -0.070562,0.058983 -0.075473,0.1143574 L 7.7206901,4.3497491 A 8.0066645,8.0066666 0.07978599 0 0 6.7396517,4.9429409 L 3.7285594,3.7801761 c -0.05187,-0.020049 -0.106186,-0.024719 -0.136533,0.017397 l -1.868883,2.5890597 c -0.03036,0.04201 -0.0089,0.092198 0.02647,0.1350479 l 2.00726,2.4379768 a 8.0066645,8.0066666 0.07978599 0 0 -0.297337,1.2099175 l -2.87584998,1.273802 c -0.05063,0.0223 -0.09223,0.05787 -0.08414,0.108856 l 0.50969398,3.152475 c 0.0084,0.05102 0.05865,0.07099 0.113649,0.07645 l 3.087471,0.299096 a 8.0066645,8.0066666 0.07978599 0 0 0.68339,1.120066 l -1.114043,2.885401 c -0.02005,0.05187 -0.02553,0.10619 0.01665,0.136641 l 2.5895106,1.869223 c 0.04201,0.03036 0.091971,0.0081 0.134949,-0.02722 l 2.3878482,-1.965906 a 8.0066645,8.0066666 0.07978599 0 0 1.2773308,0.295263 l 1.256164,2.837039 c 0.0223,0.05063 0.05862,0.09153 0.108856,0.08414 l 3.151794,-0.508734 8.25e-4,-1.3e-4 c 0.05107,-0.0084 0.07076,-0.05944 0.07585,-0.114806 l 0.3036,-3.12985 a 8.0066645,8.0066666 0.07978599 0 0 1.055091,-0.66366 l 2.945999,1.137519 c 0.05187,0.02005 0.106185,0.02472 0.136533,-0.0174 l 1.868882,-2.589057 c 0.03036,-0.04201 0.0089,-0.09211 -0.02647,-0.135048 l -2.047647,-2.487429 a 8.0066645,8.0066666 0.07978599 0 0 0.254477,-1.123453 l 2.9591,-1.310827 c 0.05063,-0.0223 0.09221,-0.05786 0.08412,-0.108842 l -0.509199,-3.1521593 -4.82e-4,-3.34e-4 c -0.0083,-0.051202 -0.05851,-0.070949 -0.113645,-0.076438 l -3.267,-0.3163889 a 8.0066645,8.0066666 0.07978599 0 0 -0.575389,-0.917404 l 1.185522,-3.0707544 c 0.02005,-0.051874 0.02553,-0.1061893 -0.01665,-0.1366322 z" />
+                            <path
+                            style="fill:var(--icon-secondary-color,InfoBackground);stroke-width:0.25;stroke-linecap:round;stroke-linejoin:round;stop-color:#000000"
+                            d="M 13.837065,10.003961 A 2.8067404,2.8067404 0 0 1 12.809727,13.838039 2.8067404,2.8067404 0 0 1 8.9756487,12.810701 2.8067404,2.8067404 0 0 1 10.002987,8.9766233 2.8067404,2.8067404 0 0 1 13.837065,10.003961 Z" />
+                        </svg>
+                        Settings
+                    </captioned-thumbnail>
+                    <style>
+                        .icon-slot [slot="icon"]
+                        {
+                            width: 36px;
+                            height: 36px;
+                        }
+                    </style>
+                </div>
+                <div class="others">
+                    <header>Custom Everything</header>
+                    <p>To show that dissimilar elements can be used as replacements, in this example:</p>
+                    <ul>
+                        <li>The <code>selected</code> slot has been provided as a <code>&lt;span&gt;</code> element, to replace an <code>&lt;input&gt;</code> element.</li>
+                        <li>The <code>icon</code> slot has been provided as a <code>&lt;span&gt;</code> element with text content instead of using an image.</li>
+                        <li>The <code>edit-button</code> slot has been provided as an <code>&gt;button&gt;</code> element with a text label, instead of an icon label.</li>
+                        <li>The <code>label</code> slot has been provided as an <code>&lt;input&gt;</code> element instead of a <code>&lt;figcaption&gt;</code> element.</li>
+                    </ul>
+                    <captioned-thumbnail edit select>
+                        <span slot="selected">t</span>
+                        <span slot="icon">i</span>
+                        <input slot="label" style="color:red" value="Caption" />
+                        <button slot="edit-button" part="edit-button">Edit</button>
+                    </captioned-thumbnail>
+                </div>
+            </div>
+        </article>
+        <article class="attributes">
+            <header>Attributes</header>
+            <div class="description">
+                <p>The <code>&lt;captioned-thumbnail&gt;</code> element can be dynamically adjusted by using it's attributes.</p>
+                <p>Use the fields, below, to change the properties of this <code>&lt;captioned-thumbnail&gt;</code> example:</p>
+            </div>
+            <div class="example">
+                <div style="display: grid; gap: .5em;">
+                    <label class="form-field label">
+                        <span class="label"><code>label</code> Attribute</span>
+                        <input class="value" type="text" placeholder="Your Custom Label" />
+                    </label>
+                    <label class="form-field src">
+                        <span class="label"><code>src</code> Attribute</span>
+                        <select class="value">
+                            <option value="none">[None]</option>
+                            <option value="./smile.png">Smile</option>
+                            <option value="./laugh.png">Laugh</option>
+                            <option value="./wink.png">Wink</option>
+                            <option value="./cry.png">Cry</option>
+                            <option value="./angry.png">Angry</option>
+                        </select>
+                    </label>
+                    <div class="form-field">
+                        <label class="edit">
+                            <input class="value" type="checkbox" />
+                            <span class="label"><code>edit</code> Attribute</span>
+                        </label>
+                        <label class="select">
+                            <input class="value" type="checkbox" />
+                            <span class="label"><code>select</code> Attribute</span>
+                        </label>
+                    </div>
+                </div>
+                <captioned-thumbnail></captioned-thumbnail>
+            </div>
+            <script type="module">
+                const attributesExample = document.querySelector('article.attributes');
+                const attributesThumbnail = attributesExample.querySelector('captioned-thumbnail');
+
+                const attributesLabelValue = document.querySelector('article.attributes .form-field.label .value');
+                const attributesSrcValue = document.querySelector('article.attributes .form-field.src .value');
+                const attributesEditValue = document.querySelector('article.attributes .form-field .edit .value');
+                const attributesSelectValue = document.querySelector('article.attributes .form-field .select .value');
+
+                document.addEventListener('DOMContentLoaded', () =>
+                {
+                    attributesLabelValue.addEventListener('input', () =>
+                    {
+                        attributesThumbnail.setAttribute('label', attributesLabelValue.value);
+                    });
+                    attributesSrcValue.addEventListener('change', () =>
+                    {
+                        if(attributesSrcValue.value == "none")
+                        {
+                            attributesThumbnail.removeAttribute('src');
+                            return;
+                        }
+                        attributesThumbnail.setAttribute('src', attributesSrcValue.value);
+                    });
+                    attributesEditValue.addEventListener('change', () =>
+                    {
+                        if(attributesEditValue.checked == true)
+                        {
+                            attributesThumbnail.toggleAttribute('edit', true);
+                            return;
+                        }
+                        attributesThumbnail.removeAttribute('edit');
+                    });
+                    attributesSelectValue.addEventListener('change', () =>
+                    {
+                        if(attributesSelectValue.checked == true)
+                        {
+                            attributesThumbnail.toggleAttribute('select', true);
+                            return;
+                        }
+                        attributesThumbnail.removeAttribute('select');
+                    });
+                });
+            </script>
+        </article>
+        <article class="events">
+            <header>Events</header>
+            <div class="description">
+                <p>The <code>&lt;captioned-thumbnail&gt;</code> element dispaches <code>change</code> events whenever its selection status changes, and <code>edit</code> events, whenever its edit button is clicked.</p>
+                <p>In the example, below, each event type is being handled and logged. For more detailed logging, see the console in the dev tools to get the actual event object.</p>
+            </div>
+            <div class="example">
+                <captioned-thumbnail edit select></captioned-thumbnail>
+            </div>
+            <div class="log">
+                <header>
+                    <span class="title">Event Log</span>
+                </header>
+                <ul></ul>
+            </div>
+            <script type="module">
+                const eventsExample = document.querySelector('article.events');
+                const eventsThumbnail = eventsExample.querySelector('captioned-thumbnail');
+                const eventsLog = document.querySelector('article.events .log ul');
+                document.addEventListener('DOMContentLoaded', () =>
+                {
+                    eventsThumbnail.addEventListener('edit', (event) =>
+                    {
+                        console.log(event);
+                        logEditResult({ type: event.type });
+                    });
+                    
+                    eventsThumbnail.addEventListener('change', (event) =>
+                    {
+                        console.log(event);
+                        logEditResult({ type: event.type });
+                    });
+                });
+                function logEditResult(result)
+                {
+                    const entry = document.createElement('li');
+                    entry.textContent = JSON.stringify(result, null, 2);
+                    entry.classList.add('entry');
+                    eventsLog.append(entry);
+                }
+            </script>
+        </article>
+    </main>
+    <script type="module" src="../vanilla/captioned-thumbnail.js"></script>
+</body>
+</html>

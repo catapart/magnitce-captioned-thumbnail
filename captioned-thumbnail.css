@@ -1,0 +1,136 @@
+
+
+:host
+{
+    display: inline-flex;
+    width: 80px;
+    height: 80px;
+    color-scheme: light dark;
+}
+
+:host(:focus) figure
+{
+    border-color: rgb(205 205 205);
+}
+@media (prefers-color-scheme: dark) 
+{
+    :host(:focus) figure
+    {
+        border-color: rgb(81 81 81);
+    }
+}
+
+figure
+{
+    flex: 1;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    margin: 0;
+    padding: 0;
+    border: solid 1px transparent;
+}
+:host(.selected) figure
+{
+    border-color: inherit;
+}
+
+[part="selected"]
+,::slotted([slot="selected"])
+{
+    grid-column: 1;
+    grid-row: 1;
+
+    justify-self: flex-start;
+    align-self: flex-start;
+    z-index: 2;
+
+    opacity: 0;
+    transition: opacity 200ms ease;
+}
+
+:host(:not([select],[selectable])) [part="selected"]
+,:host(:not([select],[selectable])) ::slotted([slot="selected"])
+{
+    display: none;
+    pointer-events: none;
+}
+
+[part="edit-button"]
+,::slotted([slot="edit-button"])
+{
+    grid-column: 1;
+    grid-row: 1;
+
+    justify-self: flex-end;
+    align-self: flex-start;
+    z-index: 2;
+
+    opacity: 0;
+    transition: opacity 200ms ease;
+}
+
+:host(:not([edit],[editable])) [part="edit-button"]
+,:host(:not([edit],[editable])) ::slotted([slot="edit-button"])
+{
+    display: none;
+    pointer-events: none;
+}
+
+[part="icon"]
+,::slotted([slot="icon"])
+{
+    grid-column: 1;
+    grid-row: 1;
+
+    justify-self: center;
+    align-self: center;
+
+    width: var(--icon-width, var(--icon-size));
+    margin: .25em;
+}
+::slotted(img[slot="icon"])
+{
+    display: block;
+    max-width: 100%;
+    min-width: 0;
+    max-height: 100%;
+    min-height: 0;
+}
+.text-icon
+{
+    font-size: 36px;
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+[part="label"]
+,::slotted([slot="label"])
+{
+    justify-self: center;
+    text-align: center;
+}
+
+:host(:not([select],[selectable]):hover)  [part="edit-button"]
+,:host(:not([select],[selectable]):hover) ::slotted([slot="edit-button"])
+,:host(:focus)  [part="edit-button"]
+,:host(:focus) ::slotted([slot="edit-button"])
+,figure:has(:checked) [part="edit-button"]
+,figure:has(:checked) ::slotted([slot="edit-button"])
+,figure:has(:focus) [part="edit-button"]
+,figure:has(:focus) ::slotted([slot="edit-button"])
+,figure:has(:focus-within) [part="edit-button"]
+,figure:has(:focus-within) ::slotted([slot="edit-button"])
+{ 
+    opacity: 1;
+}
+
+
+:host(:hover) [part="selected"]
+,figure:has(:checked) [part="selected"]
+,figure:focus [part="selected"] 
+,figure:focus-within [part="selected"]
+{ 
+    opacity: 1;
+}
