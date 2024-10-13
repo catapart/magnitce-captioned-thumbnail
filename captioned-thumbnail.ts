@@ -21,18 +21,19 @@ export class CaptionedThumbnailElement extends HTMLElement
     }
     findPart<T extends HTMLElement = HTMLElement>(key: string) { return this.shadowRoot!.querySelector(`[part="${key}"]`) as T; }
 
+    static selectedClassName: string = 'selected';
     get isSelected()
     {
-        return this.findPart<HTMLInputElement>('selected')?.checked;
+        return this.findPart<HTMLInputElement>(CaptionedThumbnailElement.selectedClassName)?.checked;
     }
     set isSelected(_value: boolean)
     {
-        if(this.getAttribute('select') ?? this.getAttribute('selectable') == null)
+        if(this.getAttribute('select') ?? this.getAttribute(CaptionedThumbnailElement.selectedClassName) == null)
         {
             return;
         }
 
-        const selected = this.findPart<HTMLInputElement>('selected')
+        const selected = this.findPart<HTMLInputElement>(CaptionedThumbnailElement.selectedClassName)
         if(selected != null)
         {
             selected.dispatchEvent(new Event('change'));
@@ -47,46 +48,27 @@ export class CaptionedThumbnailElement extends HTMLElement
         this.attachShadow({ mode: "open" });
         this.shadowRoot!.innerHTML = html;
         this.shadowRoot!.adoptedStyleSheets.push(COMPONENT_STYLESHEET);
-        
-        // const src = this.getAttribute('src');
-        // if(src != null) 
-        // {
-        //     this.updateImage(src);
-        // }
-        // const selectable = this.getAttribute('select') ?? this.getAttribute('selectable');
-        // if(selectable != null)
-        // {
-        //     this.findPart('figure').tabIndex = 0;
-        // }
 
-        /*
-         * click events fire before change events, per spec
-         * input gets checked before click event
-         * 
-         * to straighten this out, we use the click event
-         * to dispatch an input change event which handles
-         * the logic.
-         */
-
-        this.findPart('selected')?.addEventListener('change', (event) =>
+        this.shadowRoot!.querySelector('slot:not([name])')!.addEventListener('slotchange', (event) =>
         {
-            const mouseEvent = (event as MouseEvent);
-            const eventTarget = (event.target as HTMLInputElement);
-            eventTarget.checked = !eventTarget.checked;
-            if(eventTarget.checked == true)
+            let title = "";
+            for(let i = 0; i < this.childNodes.length; i++)
             {
-                this.classList.add('selected');
+                const node = this.childNodes[i];
+                if(node.nodeType == Node.TEXT_NODE)
+                {
+                    const nodeText = node.textContent?.trim() ?? "";
+                    if(nodeText != "")
+                    {
+                        title += nodeText;
+                    }
+                }
             }
-            else
-            {
-                this.classList.remove('selected');
-            }
-            this.dispatchEvent(new CustomEvent('change', { detail: { shiftKey: mouseEvent.shiftKey, ctrlKey: mouseEvent.ctrlKey, method: 'click'  }}));
+            this.title = title;
         });
 
         this.addEventListener('keydown', (event) =>
         {
-            console.log();
             if(this.shadowRoot!.activeElement == this.findPart('figure') && event.code == "Space")
             {
                 this.isSelected = !this.isSelected;
@@ -101,7 +83,25 @@ export class CaptionedThumbnailElement extends HTMLElement
             {
                 return;
             }
-            this.findPart<HTMLInputElement>('selected')?.dispatchEvent(new Event('change'));
+
+            const selected = this.findPart(CaptionedThumbnailElement.selectedClassName) as HTMLInputElement;
+            if(selected != null)
+            {
+                const isSelected = (this.classList.contains(CaptionedThumbnailElement.selectedClassName));
+                const method = (isSelected == selected.checked) ? "click" : "input";
+                if(isSelected == true)
+                {
+                    this.classList.remove(CaptionedThumbnailElement.selectedClassName);
+                    selected.checked = false;
+                }
+                else
+                {
+                    this.classList.add(CaptionedThumbnailElement.selectedClassName);
+                    selected.checked = true;
+                }
+                const mouseEvent = (event as MouseEvent);
+                this.dispatchEvent(new CustomEvent('change', { detail: { shiftKey: mouseEvent.shiftKey, ctrlKey: mouseEvent.ctrlKey, method  }}));
+            }
         });
 
         const editButtonSlot = this.shadowRoot!.querySelector('slot[name="edit-button"]') as HTMLSlotElement;
@@ -135,7 +135,11 @@ export class CaptionedThumbnailElement extends HTMLElement
         if(attributeName == 'label')
         {
             const label = this.findPart('label') ?? this.querySelector(':not([slot])');
-            if(label != null ) { label.textContent = newValue; }
+            if(label != null )
+            { 
+                label.textContent = newValue;
+                this.title = newValue;
+            }
         }
         else if(attributeName == 'src')
         {

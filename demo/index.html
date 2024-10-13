@@ -200,7 +200,7 @@
                     eventsThumbnail.addEventListener('change', (event) =>
                     {
                         console.log(event);
-                        logEditResult({ type: event.type });
+                        logEditResult({ type: event.type, method: event.detail.method });
                     });
                 });
                 function logEditResult(result)
