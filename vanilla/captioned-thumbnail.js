@@ -24,15 +24,20 @@ var CaptionedThumbnailElement = class _CaptionedThumbnailElement extends HTMLEle
   }
   static selectedClassName = "selected";
   get isSelected() {
-    return this.findPart(_CaptionedThumbnailElement.selectedClassName)?.checked;
+    return this.classList.contains(_CaptionedThumbnailElement.selectedClassName);
   }
-  set isSelected(_value) {
-    if (this.getAttribute("select") ?? this.getAttribute(_CaptionedThumbnailElement.selectedClassName) == null) {
+  set isSelected(value) {
+    if (this.getAttribute("select") ?? this.getAttribute("selectable") == null) {
       return;
     }
-    const selected = this.findPart(_CaptionedThumbnailElement.selectedClassName);
+    if (value == true) {
+      this.classList.add(_CaptionedThumbnailElement.selectedClassName);
+    } else {
+      this.classList.remove(_CaptionedThumbnailElement.selectedClassName);
+    }
+    const selected = this.findPart("selected");
     if (selected != null) {
-      selected.dispatchEvent(new Event("change"));
+      selected.checked = value;
     }
   }
   editButton;
@@ -64,7 +69,7 @@ var CaptionedThumbnailElement = class _CaptionedThumbnailElement extends HTMLEle
       if (this.getAttribute("select") ?? this.getAttribute("selectable") == null) {
         return;
       }
-      const selected = this.findPart(_CaptionedThumbnailElement.selectedClassName);
+      const selected = this.findPart("selected");
       if (selected != null) {
         const isSelected = this.classList.contains(_CaptionedThumbnailElement.selectedClassName);
         const method = isSelected == selected.checked ? "click" : "input";
@@ -76,7 +81,7 @@ var CaptionedThumbnailElement = class _CaptionedThumbnailElement extends HTMLEle
           selected.checked = true;
         }
         const mouseEvent = event;
-        this.dispatchEvent(new CustomEvent("change", { detail: { shiftKey: mouseEvent.shiftKey, ctrlKey: mouseEvent.ctrlKey, method } }));
+        this.dispatchEvent(new CustomEvent("change", { bubbles: true, detail: { shiftKey: mouseEvent.shiftKey, ctrlKey: mouseEvent.ctrlKey, method } }));
       }
     });
     const editButtonSlot = this.shadowRoot.querySelector('slot[name="edit-button"]');
@@ -86,7 +91,7 @@ var CaptionedThumbnailElement = class _CaptionedThumbnailElement extends HTMLEle
         return;
       }
       button.addEventListener("click", (event) => {
-        this.dispatchEvent(new CustomEvent("edit"));
+        this.dispatchEvent(new CustomEvent("edit", { bubbles: true }));
         event.stopPropagation();
         event.preventDefault();
         return false;
@@ -94,7 +99,7 @@ var CaptionedThumbnailElement = class _CaptionedThumbnailElement extends HTMLEle
       this.editButton = button;
     });
     this.findPart("edit-button")?.addEventListener("click", (event) => {
-      this.dispatchEvent(new CustomEvent("edit"));
+      this.dispatchEvent(new CustomEvent("edit", { bubbles: true }));
       event.stopPropagation();
       event.preventDefault();
       return false;

@@ -4,7 +4,7 @@ declare class CaptionedThumbnailElement extends HTMLElement {
     findPart<T extends HTMLElement = HTMLElement>(key: string): T;
     static selectedClassName: string;
     get isSelected(): boolean;
-    set isSelected(_value: boolean);
+    set isSelected(value: boolean);
     editButton?: WeakKey;
     constructor();
     static observedAttributes: string[];
