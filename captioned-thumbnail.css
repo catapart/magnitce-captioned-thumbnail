@@ -108,8 +108,9 @@ figure
 [part="label"]
 ,::slotted([slot="label"])
 {
-    justify-self: center;
     text-align: center;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 :host(:not([select],[selectable]):hover)  [part="edit-button"]
