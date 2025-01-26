@@ -1,6 +1,6 @@
 {
   "name": "@magnit-ce/captioned-thumbnail",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A custom html element that displays an image or icon with a caption and interactive components.",
   "type": "module",
   "main": "dist/captioned-thumbnail.js",
