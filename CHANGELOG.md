@@ -1,5 +1,11 @@
 # @magnit-ce/captioned-thumbnail
 
+## 0.0.4
+
+### Patch Changes
+
+- 6266428: fixed event bubbling for nested shadow doms
+
 ## 0.0.3
 
 ### Patch Changes
