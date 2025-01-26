@@ -81,7 +81,7 @@ var CaptionedThumbnailElement = class _CaptionedThumbnailElement extends HTMLEle
           selected.checked = true;
         }
         const mouseEvent = event;
-        this.dispatchEvent(new CustomEvent("change", { bubbles: true, detail: { shiftKey: mouseEvent.shiftKey, ctrlKey: mouseEvent.ctrlKey, method } }));
+        this.dispatchEvent(new CustomEvent("change", { bubbles: true, composed: true, detail: { shiftKey: mouseEvent.shiftKey, ctrlKey: mouseEvent.ctrlKey, method } }));
       }
     });
     const editButtonSlot = this.shadowRoot.querySelector('slot[name="edit-button"]');
@@ -91,7 +91,7 @@ var CaptionedThumbnailElement = class _CaptionedThumbnailElement extends HTMLEle
         return;
       }
       button.addEventListener("click", (event) => {
-        this.dispatchEvent(new CustomEvent("edit", { bubbles: true }));
+        this.dispatchEvent(new CustomEvent("edit", { bubbles: true, composed: true }));
         event.stopPropagation();
         event.preventDefault();
         return false;
@@ -99,7 +99,7 @@ var CaptionedThumbnailElement = class _CaptionedThumbnailElement extends HTMLEle
       this.editButton = button;
     });
     this.findPart("edit-button")?.addEventListener("click", (event) => {
-      this.dispatchEvent(new CustomEvent("edit", { bubbles: true }));
+      this.dispatchEvent(new CustomEvent("edit", { bubbles: true, composed: true }));
       event.stopPropagation();
       event.preventDefault();
       return false;

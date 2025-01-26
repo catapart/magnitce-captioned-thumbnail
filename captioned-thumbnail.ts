@@ -108,7 +108,7 @@ export class CaptionedThumbnailElement extends HTMLElement
                     selected.checked = true;
                 }
                 const mouseEvent = (event as MouseEvent);
-                this.dispatchEvent(new CustomEvent('change', { bubbles: true, detail: { shiftKey: mouseEvent.shiftKey, ctrlKey: mouseEvent.ctrlKey, method  }}));
+                this.dispatchEvent(new CustomEvent('change', { bubbles: true, composed: true, detail: { shiftKey: mouseEvent.shiftKey, ctrlKey: mouseEvent.ctrlKey, method  }}));
             }
         });
 
@@ -119,7 +119,7 @@ export class CaptionedThumbnailElement extends HTMLElement
             if(this.editButton == button) { return; }
             button.addEventListener('click', (event) =>
             {
-                this.dispatchEvent(new CustomEvent('edit', { bubbles: true }));
+                this.dispatchEvent(new CustomEvent('edit', { bubbles: true, composed: true, }));
                 event.stopPropagation();
                 event.preventDefault();
                 return false;
@@ -129,7 +129,7 @@ export class CaptionedThumbnailElement extends HTMLElement
 
         this.findPart('edit-button')?.addEventListener('click', (event) =>
         {
-            this.dispatchEvent(new CustomEvent('edit', { bubbles: true }));
+            this.dispatchEvent(new CustomEvent('edit', { bubbles: true, composed: true, }));
             event.stopPropagation();
             event.preventDefault();
             return false;

@@ -25,29 +25,23 @@
             </div>
             <section class="default">
                 <h3>Default</h3>
-                <div class="description">
-                    <p>In this example, the thumbnail is given no attributes, and no child content.</p>
-                </div>
+                <p>In this example, the thumbnail is given no attributes, and no child content.</p>
                 <div class="example">
                     <captioned-thumbnail></captioned-thumbnail>
                 </div>
             </section>
             <section class="edit">
                 <h3>Edit</h3>
-                <div class="description">
-                    <p>In this example, the thumbnail has an <code>edit</code> attribute, and the text <code>Editable Item</code> as its child content.</p>
-                    <p>Note that while the item will display an edit button, it is still not selectable.</p>
-                </div>
+                <p>In this example, the thumbnail has an <code>edit</code> attribute, and the text <code>Editable Item</code> as its child content.</p>
+                <p>Note that while the item will display an edit button, it is still not selectable.</p>
                 <div class="example">
                     <captioned-thumbnail edit>Editable Item</captioned-thumbnail>
                 </div>
             </section>
             <section class="select">
                 <h3>Select</h3>
-                <div class="description">
-                    <p>In this example, the thumbnail has a <code>select</code> attribute, and the text <code>Selectable Item</code> as its child content.</p>
-                    <p>Note that while the item can be selected, it does not display an edit button.</p>
-                </div>
+                <p>In this example, the thumbnail has a <code>select</code> attribute, and the text <code>Selectable Item</code> as its child content.</p>
+                <p>Note that while the item can be selected, it does not display an edit button.</p>
                 <div class="example">
                     <captioned-thumbnail select>Selectable Item</captioned-thumbnail>
                 </div>
@@ -60,18 +54,14 @@
             </div>
             <section class="image-src">
                 <h3>Custom Icon - Image Source</h3>
-                <div class="description">
-                    <p>This example uses a custom icon by providing a valid path to the <code>&lt;captioned-thumbnail&gt;</code> element's <code>src</code> attribute. The example also has text content of <code>smile</code> which is used as the caption text.</p>    
-                </div>
+              <p>This example uses a custom icon by providing a valid path to the <code>&lt;captioned-thumbnail&gt;</code> element's <code>src</code> attribute. The example also has text content of <code>smile</code> which is used as the caption text.</p>
                 <div class="example">
                     <captioned-thumbnail src="./smile.png" edit select>smile</captioned-thumbnail>
                 </div>
             </section>
             <section class="icon-slot">
                 <h3>Custom Icon - SVG</h3>
-                <div class="description">
-                    <p>In this example, an <code>&lt;svg&gt;</code> element is provided for the <code>icon</code> slot, which replaces the icon with an <code>&lt;svg&gt;</code> element.</p>    
-                </div>
+                <p>In this example, an <code>&lt;svg&gt;</code> element is provided for the <code>icon</code> slot, which replaces the icon with an <code>&lt;svg&gt;</code> element.</p>
                 <div class="example">
                     <captioned-thumbnail edit select>
                         <svg slot="icon" class="icon gear" viewBox="0 0 22.812714 22.814663" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
@@ -95,15 +85,13 @@
             </section>
             <section class="others">
                 <h3>Custom Everything</h3>
-                <div class="description">
-                    <p>To show that dissimilar elements can be used as replacements, in this example:</p>
-                    <ul>
-                        <li>The <code>selected</code> slot has been provided as a <code>&lt;span&gt;</code> element, to replace an <code>&lt;input&gt;</code> element.</li>
-                        <li>The <code>icon</code> slot has been provided as a <code>&lt;span&gt;</code> element with text content instead of using an image.</li>
-                        <li>The <code>edit-button</code> slot has been provided as an <code>&gt;button&gt;</code> element with a text label, instead of an icon label.</li>
-                        <li>The <code>label</code> slot has been provided as an <code>&lt;input&gt;</code> element instead of a <code>&lt;figcaption&gt;</code> element.</li>
-                    </ul>
-                </div>
+                <p>To show that dissimilar elements can be used as replacements, in this example:</p>
+                <ul>
+                    <li>The <code>selected</code> slot has been provided as a <code>&lt;span&gt;</code> element, to replace an <code>&lt;input&gt;</code> element.</li>
+                    <li>The <code>icon</code> slot has been provided as a <code>&lt;span&gt;</code> element with text content instead of using an image.</li>
+                    <li>The <code>edit-button</code> slot has been provided as an <code>&gt;button&gt;</code> element with a text label, instead of an icon label.</li>
+                    <li>The <code>label</code> slot has been provided as an <code>&lt;input&gt;</code> element instead of a <code>&lt;figcaption&gt;</code> element.</li>
+                </ul>
                 <div class="example">
                     <captioned-thumbnail edit select>
                         <span slot="selected">t</span>
@@ -120,38 +108,38 @@
                 <p>The <code>&lt;captioned-thumbnail&gt;</code> element can be dynamically adjusted by using it's attributes.</p>
                 <p>Use the fields, below, to change the properties of this <code>&lt;captioned-thumbnail&gt;</code> example:</p>
             </div>
-            <section>
-                <div style="display: grid; gap: .5em;">
-                    <label class="form-field label">
-                        <span class="label"><code>label</code> Attribute</span>
-                        <input class="value" type="text" placeholder="Your Custom Label" />
+            <fieldset style="display: grid; gap: .5em;">
+                <label class="form-field label">
+                    <span class="label"><code>label</code> Attribute</span>
+                    <input class="value" type="text" placeholder="Your Custom Label" />
+                </label>
+                <label class="form-field src">
+                    <span class="label"><code>src</code> Attribute</span>
+                    <select class="value">
+                        <option value="none">[None]</option>
+                        <option value="./smile.png">Smile</option>
+                        <option value="./laugh.png">Laugh</option>
+                        <option value="./wink.png">Wink</option>
+                        <option value="./cry.png">Cry</option>
+                        <option value="./angry.png">Angry</option>
+                    </select>
+                </label>
+                <div class="form-field">
+                    <label class="edit">
+                        <input class="value" type="checkbox" />
+                        <span class="label"><code>edit</code> Attribute</span>
                     </label>
-                    <label class="form-field src">
-                        <span class="label"><code>src</code> Attribute</span>
-                        <select class="value">
-                            <option value="none">[None]</option>
-                            <option value="./smile.png">Smile</option>
-                            <option value="./laugh.png">Laugh</option>
-                            <option value="./wink.png">Wink</option>
-                            <option value="./cry.png">Cry</option>
-                            <option value="./angry.png">Angry</option>
-                        </select>
+                </div>
+                <div class="form-field">
+                    <label class="select">
+                        <input class="value" type="checkbox" />
+                        <span class="label"><code>select</code> Attribute</span>
                     </label>
-                    <div class="form-field">
-                        <label class="edit">
-                            <input class="value" type="checkbox" />
-                            <span class="label"><code>edit</code> Attribute</span>
-                        </label>
-                        <label class="select">
-                            <input class="value" type="checkbox" />
-                            <span class="label"><code>select</code> Attribute</span>
-                        </label>
-                    </div>
                 </div>
-                <div class="example">
-                    <captioned-thumbnail></captioned-thumbnail>
-                </div>
-            </section>
+            </fieldset>
+            <div class="example">
+                <captioned-thumbnail></captioned-thumbnail>
+            </div>
             <script type="module">
                 const attributesExample = document.querySelector('article.attributes');
                 const attributesThumbnail = attributesExample.querySelector('captioned-thumbnail');
@@ -236,6 +224,62 @@
                     entry.textContent = JSON.stringify(result, null, 2);
                     entry.classList.add('entry');
                     eventsLog.append(entry);
+                }
+            </script>
+        </article>
+        <article class="nested-slots">
+            <h2>Nested Slots</h2>
+            <div class="description">
+                <p>The <code>&lt;captioned-thumbnail&gt;</code> element can be used within other components, but it is expected that the element will be composed - including its slots - by the implementing component.</p>
+                <p>Any slots passed down through <code>&lt;slot&gt;</code> elements can only be manipulated by forwarding the expected slots in the shadow dom of the parent component.</p>
+                <p>To demonstrate this, note that the first entry does not pass any slots, and appears regularly. The second passes slots for the label and edit button. The third example passes in the icon slot. Each of these examples only work because they are being handled by the <code>&lt;shadow-wrapper-container&gt;</code> and <code>&lt;shadow-wrapper&gt;</code> elements, during the <code>slotchange</code> events.</p>
+                <p>Note that the actual slotted elements, themselves, need to be added to a deafult <code>&lt;slot&gt;</code> element in the wrapper container. This is due to the <code>slot</code> attribute being set, on each element, effectively making them invisible to the default slot in the wrapper container. To work around this, all subslot elements are added to a <code>&lt;slot&gt;</code> element, which is then handled by the wrapper element to assign the slots appropriately for the <code>&lt;captioned-thumbnail&gt;</code> element.</p>
+                <p><code>event</code>s, unlike <code>slot</code>s, work just fine with nesting. This is demonstrated by each component still triggering events simply by listening to the example element, showing that even deeply nested events still bubble through to the light DOM.</p>
+            </div>
+            <div class="example">
+                <shadow-wrapper-container></shadow-wrapper-container>
+                <shadow-wrapper-container>
+                    <slot>
+                        <a slot="label" style="color:red">cap</a>
+                        <button slot="edit-button" part="edit-button">Edit</button>
+                    </slot>
+                </shadow-wrapper-container>
+                <shadow-wrapper-container>
+                    <slot><span slot="icon">i</span></slot>
+                </shadow-wrapper-container>
+            </div>
+            <div class="log">
+                <header>
+                    <span class="title">Event Log</span>
+                </header>
+                <ul></ul>
+            </div>
+            <script type="module">
+                import './shadow-wrapper-container.js';
+                import './shadow-wrapper.js';
+                const nestedSlotsExample = document.querySelector('article.nested-slots');
+                // const nestedSlotsWrapper = nestedSlotsExample.querySelector('shadow-wrapper-container');
+                const nestedSlotsLog = document.querySelector('article.nested-slots .log ul');
+                document.addEventListener('DOMContentLoaded', () =>
+                {
+                    nestedSlotsExample.addEventListener('edit', (event) =>
+                    {
+                        console.log(event);
+                        logEditResult({ type: event.type });
+                    });
+                    
+                    nestedSlotsExample.addEventListener('change', (event) =>
+                    {
+                        console.log(event);
+                        logEditResult({ type: event.type, method: event.detail.method });
+                    });
+                });
+                function logEditResult(result)
+                {
+                    const entry = document.createElement('li');
+                    entry.textContent = JSON.stringify(result, null, 2);
+                    entry.classList.add('entry');
+                    nestedSlotsLog.append(entry);
                 }
             </script>
         </article>
