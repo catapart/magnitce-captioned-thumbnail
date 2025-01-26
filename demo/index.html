@@ -3,55 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Captioned Thumbnail Demo</title>
+    <title>&lt;captioned-thumbnail&gt; Demo</title>
     <link rel="stylesheet" href="./demo-page.css">
 </head>
 <body>
-    <main>
-        <h1>Overview</h1>
-        <div class="overview">
+    <main class="centered-single-column">
+        <header class="full-width">
+            <div class="content centered-single-column">
+                <h1>The <code>captioned-thumbnail</code> element</h1>
+            </div>
+        </header>
+        <article class="overview">
+            <h2>Overview</h2>
             <p>The <code>&lt;captioned-thumbnail&gt;</code> element is meant to mimic a popular item display layout used in Operating Systems like Windows, MacOS, iOS, and Android.</p>
             <p>It includes functionality to provide selection status, dispatch selection and editing events, and be manipulated by both pointers and keyboards.</p>
-        </div>
-        <h1>Examples</h1>
+        </article>
         <article class="basic">
-            <header>Basic Examples</header>
+            <h2>Basic Examples</h2>
+            <div class="description">
                 <p>The <code>&lt;captioned-thumbnail&gt;</code> element is strictly visual element, by default. It is not selectable, and does not display sub-elements like a checkbox to indicate selection, or an edit button to allow edit invoking.</p>                
             </div>
-            <div class="example">
-                <div class="default">
-                    <header>Default</header>
-                    <p>In this example, the thumbnail is given no attributes, and no child content.</p>
+            <section class="default">
+                <h3>Default</h3>
+                <p>In this example, the thumbnail is given no attributes, and no child content.</p>
+                <div class="example">
                     <captioned-thumbnail></captioned-thumbnail>
                 </div>
-                <div class="edit">
-                    <header>Edit</header>
-                    <p>In this example, the thumbnail has an <code>edit</code> attribute, and the text <code>Editable Item</code> as its child content.</p>
-                    <p>Note that while the item will display an edit button, it is still not selectable.</p>
+            </section>
+            <section class="edit">
+                <h3>Edit</h3>
+                <p>In this example, the thumbnail has an <code>edit</code> attribute, and the text <code>Editable Item</code> as its child content.</p>
+                <p>Note that while the item will display an edit button, it is still not selectable.</p>
+                <div class="example">
                     <captioned-thumbnail edit>Editable Item</captioned-thumbnail>
                 </div>
-                <div class="select">
-                    <header>Select</header>
-                    <p>In this example, the thumbnail has a <code>select</code> attribute, and the text <code>Selectable Item</code> as its child content.</p>
-                    <p>Note that while the item can be selected, it does not display an edit button.</p>
+            </section>
+            <section class="select">
+                <h3>Select</h3>
+                <p>In this example, the thumbnail has a <code>select</code> attribute, and the text <code>Selectable Item</code> as its child content.</p>
+                <p>Note that while the item can be selected, it does not display an edit button.</p>
+                <div class="example">
                     <captioned-thumbnail select>Selectable Item</captioned-thumbnail>
                 </div>
-            </div>
+            </section>
         </article>
         <article class="customization">
-            <header>Customization</header>
+            <h2>Customization</h2>
             <div class="description">
                 <p>The <code>&lt;captioned-thumbnail&gt;</code> element can be customized in multiple ways, including via attributes, slots, or directly styling its parts.</p>
             </div>
-            <div class="example">
-                <div class="image-src">
-                    <header>Custom Icon - Image Source</header>
-                    <p>This example uses a custom icon by providing a valid path to the <code>&lt;captioned-thumbnail&gt;</code> element's <code>src</code> attribute. The example also has text content of <code>smile</code> which is used as the caption text.</p>
+            <section class="image-src">
+                <h3>Custom Icon - Image Source</h3>
+                <p>This example uses a custom icon by providing a valid path to the <code>&lt;captioned-thumbnail&gt;</code> element's <code>src</code> attribute. The example also has text content of <code>smile</code> which is used as the caption text.</p>
+                <div class="example">
                     <captioned-thumbnail src="./smile.png" edit select>smile</captioned-thumbnail>
                 </div>
-                <div class="icon-slot">
-                    <header>Custom Icon - SVG</header>
-                    <p>In this example, an <code>&lt;svg&gt;</code> element is provided for the <code>icon</code> slot, which replaces the icon with an <code>&lt;svg&gt;</code> element.</p>
+            </section>
+            <section class="icon-slot">
+                <h3>Custom Icon - SVG</h3>
+                <p>In this example, an <code>&lt;svg&gt;</code> element is provided for the <code>icon</code> slot, which replaces the icon with an <code>&lt;svg&gt;</code> element.</p>
+                <div class="example">
                     <captioned-thumbnail edit select>
                         <svg slot="icon" class="icon gear" viewBox="0 0 22.812714 22.814663" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
                             <path
@@ -63,23 +74,25 @@
                         </svg>
                         Settings
                     </captioned-thumbnail>
-                    <style>
-                        .icon-slot [slot="icon"]
-                        {
-                            width: 36px;
-                            height: 36px;
-                        }
-                    </style>
                 </div>
-                <div class="others">
-                    <header>Custom Everything</header>
-                    <p>To show that dissimilar elements can be used as replacements, in this example:</p>
-                    <ul>
-                        <li>The <code>selected</code> slot has been provided as a <code>&lt;span&gt;</code> element, to replace an <code>&lt;input&gt;</code> element.</li>
-                        <li>The <code>icon</code> slot has been provided as a <code>&lt;span&gt;</code> element with text content instead of using an image.</li>
-                        <li>The <code>edit-button</code> slot has been provided as an <code>&gt;button&gt;</code> element with a text label, instead of an icon label.</li>
-                        <li>The <code>label</code> slot has been provided as an <code>&lt;input&gt;</code> element instead of a <code>&lt;figcaption&gt;</code> element.</li>
-                    </ul>
+                <style>
+                    .icon-slot [slot="icon"]
+                    {
+                        width: 36px;
+                        height: 36px;
+                    }
+                </style>
+            </section>
+            <section class="others">
+                <h3>Custom Everything</h3>
+                <p>To show that dissimilar elements can be used as replacements, in this example:</p>
+                <ul>
+                    <li>The <code>selected</code> slot has been provided as a <code>&lt;span&gt;</code> element, to replace an <code>&lt;input&gt;</code> element.</li>
+                    <li>The <code>icon</code> slot has been provided as a <code>&lt;span&gt;</code> element with text content instead of using an image.</li>
+                    <li>The <code>edit-button</code> slot has been provided as an <code>&gt;button&gt;</code> element with a text label, instead of an icon label.</li>
+                    <li>The <code>label</code> slot has been provided as an <code>&lt;input&gt;</code> element instead of a <code>&lt;figcaption&gt;</code> element.</li>
+                </ul>
+                <div class="example">
                     <captioned-thumbnail edit select>
                         <span slot="selected">t</span>
                         <span slot="icon">i</span>
@@ -87,42 +100,44 @@
                         <button slot="edit-button" part="edit-button">Edit</button>
                     </captioned-thumbnail>
                 </div>
-            </div>
+            </section>
         </article>
         <article class="attributes">
-            <header>Attributes</header>
+            <h2>Attributes</h2>
             <div class="description">
                 <p>The <code>&lt;captioned-thumbnail&gt;</code> element can be dynamically adjusted by using it's attributes.</p>
                 <p>Use the fields, below, to change the properties of this <code>&lt;captioned-thumbnail&gt;</code> example:</p>
             </div>
-            <div class="example">
-                <div style="display: grid; gap: .5em;">
-                    <label class="form-field label">
-                        <span class="label"><code>label</code> Attribute</span>
-                        <input class="value" type="text" placeholder="Your Custom Label" />
+            <fieldset style="display: grid; gap: .5em;">
+                <label class="form-field label">
+                    <span class="label"><code>label</code> Attribute</span>
+                    <input class="value" type="text" placeholder="Your Custom Label" />
+                </label>
+                <label class="form-field src">
+                    <span class="label"><code>src</code> Attribute</span>
+                    <select class="value">
+                        <option value="none">[None]</option>
+                        <option value="./smile.png">Smile</option>
+                        <option value="./laugh.png">Laugh</option>
+                        <option value="./wink.png">Wink</option>
+                        <option value="./cry.png">Cry</option>
+                        <option value="./angry.png">Angry</option>
+                    </select>
+                </label>
+                <div class="form-field">
+                    <label class="edit">
+                        <input class="value" type="checkbox" />
+                        <span class="label"><code>edit</code> Attribute</span>
                     </label>
-                    <label class="form-field src">
-                        <span class="label"><code>src</code> Attribute</span>
-                        <select class="value">
-                            <option value="none">[None]</option>
-                            <option value="./smile.png">Smile</option>
-                            <option value="./laugh.png">Laugh</option>
-                            <option value="./wink.png">Wink</option>
-                            <option value="./cry.png">Cry</option>
-                            <option value="./angry.png">Angry</option>
-                        </select>
-                    </label>
-                    <div class="form-field">
-                        <label class="edit">
-                            <input class="value" type="checkbox" />
-                            <span class="label"><code>edit</code> Attribute</span>
-                        </label>
-                        <label class="select">
-                            <input class="value" type="checkbox" />
-                            <span class="label"><code>select</code> Attribute</span>
-                        </label>
-                    </div>
                 </div>
+                <div class="form-field">
+                    <label class="select">
+                        <input class="value" type="checkbox" />
+                        <span class="label"><code>select</code> Attribute</span>
+                    </label>
+                </div>
+            </fieldset>
+            <div class="example">
                 <captioned-thumbnail></captioned-thumbnail>
             </div>
             <script type="module">
@@ -171,7 +186,7 @@
             </script>
         </article>
         <article class="events">
-            <header>Events</header>
+            <h2>Events</h2>
             <div class="description">
                 <p>The <code>&lt;captioned-thumbnail&gt;</code> element dispaches <code>change</code> events whenever its selection status changes, and <code>edit</code> events, whenever its edit button is clicked.</p>
                 <p>In the example, below, each event type is being handled and logged. For more detailed logging, see the console in the dev tools to get the actual event object.</p>
