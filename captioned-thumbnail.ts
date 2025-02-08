@@ -9,17 +9,17 @@ const COMPONENT_TAG_NAME = 'captioned-thumbnail';
 export class CaptionedThumbnailElement extends HTMLElement
 {
     componentParts: Map<string, HTMLElement> = new Map();
-    getPart<T extends HTMLElement = HTMLElement>(key: string)
+    getElement<T extends HTMLElement = HTMLElement>(id: string)
     {
-        if(this.componentParts.get(key) == null)
+        if(this.componentParts.get(id) == null)
         {
-            const part = this.shadowRoot!.querySelector(`[part="${key}"]`) as HTMLElement;
-            if(part != null) { this.componentParts.set(key, part); }
+            const part = this.findElement(id);
+            if(part != null) { this.componentParts.set(id, part); }
         }
 
-        return this.componentParts.get(key) as T;
+        return this.componentParts.get(id) as T;
     }
-    findPart<T extends HTMLElement = HTMLElement>(key: string) { return this.shadowRoot!.querySelector(`[part="${key}"]`) as T; }
+    findElement<T extends HTMLElement = HTMLElement>(id: string) { return this.shadowRoot!.getElementById(id) as T; }
 
     static selectedClassName: string = 'selected';
     get isSelected()
@@ -41,14 +41,12 @@ export class CaptionedThumbnailElement extends HTMLElement
         {
             this.classList.remove(CaptionedThumbnailElement.selectedClassName);
         }
-        const selected = this.findPart<HTMLInputElement>('selected')
+        const selected = this.findElement<HTMLInputElement>('selected')
         if(selected != null)
         {
             selected.checked = value;
         }
     }
-
-    editButton?: WeakKey;
 
     constructor()
     {
@@ -56,28 +54,17 @@ export class CaptionedThumbnailElement extends HTMLElement
         this.attachShadow({ mode: "open" });
         this.shadowRoot!.innerHTML = html;
         this.shadowRoot!.adoptedStyleSheets.push(COMPONENT_STYLESHEET);
+        this.#applyPartAttributes();
+        this.#updateTitle();
 
         this.shadowRoot!.querySelector('slot:not([name])')!.addEventListener('slotchange', (event) =>
         {
-            let title = "";
-            for(let i = 0; i < this.childNodes.length; i++)
-            {
-                const node = this.childNodes[i];
-                if(node.nodeType == Node.TEXT_NODE)
-                {
-                    const nodeText = node.textContent?.trim() ?? "";
-                    if(nodeText != "")
-                    {
-                        title += nodeText;
-                    }
-                }
-            }
-            this.title = title;
+            this.#updateTitle();
         });
 
         this.addEventListener('keydown', (event) =>
         {
-            if(this.shadowRoot!.activeElement == this.findPart('figure') && event.code == "Space")
+            if(this.shadowRoot!.activeElement == this.findElement('figure') && event.code == "Space")
             {
                 this.isSelected = !this.isSelected;
             }
@@ -85,18 +72,33 @@ export class CaptionedThumbnailElement extends HTMLElement
 
         this.addEventListener('click', (event) =>
         {
-            event.stopPropagation();
+            if(this.hasAttribute('stop-click') == true)
+            {
+                event.stopPropagation();
+            }
+
+            const targetEditButton = event.composedPath().find(item => item instanceof HTMLElement 
+            && (item.id == 'edit-button' || item.getAttribute('slot') == "edit-button"))
+            if(targetEditButton != null) {
+                this.dispatchEvent(new CustomEvent('edit', { detail: { button: targetEditButton, item: this }, bubbles: true, composed: true, }));
+                return;
+            }
 
             if(this.getAttribute('select') ?? this.getAttribute('selectable') == null)
             {
                 return;
             }
 
-            const selected = this.findPart('selected') as HTMLInputElement;
+            const selected = this.findElement('selected') as HTMLInputElement;
             if(selected != null)
             {
                 const isSelected = (this.classList.contains(CaptionedThumbnailElement.selectedClassName));
                 const method = (isSelected == selected.checked) ? "click" : "input";
+
+                const mouseEvent = (event as MouseEvent);
+                const allowDefault = this.dispatchEvent(new CustomEvent('change', { bubbles: true, composed: true, cancelable: true, detail: { shiftKey: mouseEvent.shiftKey, ctrlKey: mouseEvent.ctrlKey, method  }}));
+                console.log('allowDefault', allowDefault);
+                if(allowDefault == false) { return; }
                 if(isSelected == true)
                 {
                     this.classList.remove(CaptionedThumbnailElement.selectedClassName);
@@ -107,34 +109,47 @@ export class CaptionedThumbnailElement extends HTMLElement
                     this.classList.add(CaptionedThumbnailElement.selectedClassName);
                     selected.checked = true;
                 }
-                const mouseEvent = (event as MouseEvent);
-                this.dispatchEvent(new CustomEvent('change', { bubbles: true, composed: true, detail: { shiftKey: mouseEvent.shiftKey, ctrlKey: mouseEvent.ctrlKey, method  }}));
             }
         });
-
-        const editButtonSlot = this.shadowRoot!.querySelector('slot[name="edit-button"]') as HTMLSlotElement;
-        editButtonSlot.addEventListener('slotchange', () =>
-        {
-            const button = editButtonSlot.assignedElements()[0];
-            if(this.editButton == button) { return; }
-            button.addEventListener('click', (event) =>
-            {
-                this.dispatchEvent(new CustomEvent('edit', { bubbles: true, composed: true, }));
-                event.stopPropagation();
-                event.preventDefault();
-                return false;
-            });
-            this.editButton = button;
-        });
-
-        this.findPart('edit-button')?.addEventListener('click', (event) =>
-        {
-            this.dispatchEvent(new CustomEvent('edit', { bubbles: true, composed: true, }));
-            event.stopPropagation();
-            event.preventDefault();
-            return false;
-        });
         
+    }
+    #applyPartAttributes()
+    {
+        const identifiedElements = [...this.shadowRoot!.querySelectorAll('[id]')];
+        for(let i = 0; i < identifiedElements.length; i++)
+        {
+            identifiedElements[i].part.add(identifiedElements[i].id);
+        }
+        const classedElements = [...this.shadowRoot!.querySelectorAll('[class]')];
+        for(let i = 0; i < classedElements.length; i++)
+        {
+            classedElements[i].part.add(...classedElements[i].classList);
+        }
+    }
+
+    #updateTitle()
+    {
+        let title = "";
+        for(let i = 0; i < this.childNodes.length; i++)
+        {
+            const node = this.childNodes[i];
+            if(node.nodeType == Node.TEXT_NODE)
+            {
+                const nodeText = node.textContent?.trim() ?? "";
+                if(nodeText != "")
+                {
+                    title += nodeText;
+                }
+            }
+        }
+        if(title.trim() == "") { title = this.findElement('caption')!.textContent!; }
+        this.title = title;
+    }
+
+    updateImage(source: string)
+    {
+        let imageIcon = this.findElement<HTMLImageElement>('image-icon')!;
+        imageIcon.src = source;
     }
 
     static observedAttributes = [ 'label', 'src', 'select', 'selectable' ];
@@ -142,12 +157,12 @@ export class CaptionedThumbnailElement extends HTMLElement
     {
         if(attributeName == 'label')
         {
-            const label = this.findPart('label') ?? this.querySelector(':not([slot])');
-            if(label != null )
-            { 
-                label.textContent = newValue;
-                this.title = newValue;
-            }
+            // clear text nodes
+            const textNodes = Array.from(this.childNodes).filter(item => item.nodeType == Node.TEXT_NODE);
+            for(let i = 0; i < textNodes.length; i++) { textNodes[i].remove(); }
+            // add new label as child to be handled as default slot
+            this.append(newValue);
+            this.#updateTitle();
         }
         else if(attributeName == 'src')
         {
@@ -155,48 +170,8 @@ export class CaptionedThumbnailElement extends HTMLElement
         }
         else if(attributeName == 'select' || attributeName == 'selectable')
         {
-            this.findPart('figure').tabIndex = 0;
+            this.findElement('figure').tabIndex = 0;
         }
-    }
-
-    updateImage(source: string)
-    {
-        let icon: HTMLElement|null = this.findPart('icon') ?? this.querySelector('[slot="icon"]');
-
-        if(source == null)
-        {
-            // clear thumbnail
-
-            if(icon != null)
-            {
-                icon.remove();
-            }
-
-            icon = document.createElement('span');
-            icon.setAttribute('part', 'icon');
-            icon.classList.add('text-icon');
-            icon.textContent = '🗎';
-
-            this.shadowRoot!.querySelector('slot[name="icon"]')?.appendChild(icon);
-
-            return;
-        }
-
-        if(icon != null && icon.tagName != 'img')
-        {
-            icon.remove();
-            icon = null;
-        }
-        if(icon == null)
-        {
-            icon = document.createElement('img');
-            icon.setAttribute('alt', 'Icon');
-            icon.setAttribute('title', 'Icon');
-            icon.setAttribute('slot', 'icon');
-            this.appendChild(icon);
-        }
-        (icon as HTMLImageElement).src = source;
-
     }
 }
 
