@@ -5,6 +5,7 @@ var captioned_thumbnail_default = '\r\n\r\n:host\r\n{\r\n    display: inline-fle
 var captioned_thumbnail_default2 = '<figure id="figure">\r\n    <slot name="selected"><input type="checkbox" id="selected" /></slot>\r\n    <slot name="edit-button"><button type="button" id="edit-button">&#9998;</button></slot>\r\n    <slot name="icon">\r\n        <span id="text-icon" class="icon">\u{1F5CE}</span>\r\n        <img id="image-icon" class="icon" />\r\n    </slot>\r\n    <slot name="caption"><figcaption id="caption"><slot>Item</slot></figcaption></slot>\r\n</figure>';
 
 // captioned-thumbnail.ts
+var KEYCODE_SELECTION_MAP = ["Space", "Enter"];
 var COMPONENT_STYLESHEET = new CSSStyleSheet();
 COMPONENT_STYLESHEET.replaceSync(captioned_thumbnail_default);
 var COMPONENT_TAG_NAME = "captioned-thumbnail";
@@ -24,20 +25,13 @@ var CaptionedThumbnailElement = class _CaptionedThumbnailElement extends HTMLEle
   }
   static selectedClassName = "selected";
   get isSelected() {
-    return this.classList.contains(_CaptionedThumbnailElement.selectedClassName);
+    return this.hasAttribute("aria-selected");
   }
   set isSelected(value) {
-    if (this.getAttribute("select") ?? this.getAttribute("selectable") == null) {
-      return;
-    }
     if (value == true) {
-      this.classList.add(_CaptionedThumbnailElement.selectedClassName);
+      this.#select();
     } else {
-      this.classList.remove(_CaptionedThumbnailElement.selectedClassName);
-    }
-    const selected = this.findElement("selected");
-    if (selected != null) {
-      selected.checked = value;
+      this.#deselect();
     }
   }
   constructor() {
@@ -47,45 +41,13 @@ var CaptionedThumbnailElement = class _CaptionedThumbnailElement extends HTMLEle
     this.shadowRoot.adoptedStyleSheets.push(COMPONENT_STYLESHEET);
     this.#applyPartAttributes();
     this.#updateTitle();
-    this.shadowRoot.querySelector("slot:not([name])").addEventListener("slotchange", (event) => {
-      this.#updateTitle();
-    });
-    this.addEventListener("keydown", (event) => {
-      if (this.shadowRoot.activeElement == this.findElement("figure") && event.code == "Space") {
-        this.isSelected = !this.isSelected;
-      }
-    });
-    this.addEventListener("click", (event) => {
-      if (this.hasAttribute("stop-click") == true) {
-        event.stopPropagation();
-      }
-      const targetEditButton = event.composedPath().find((item) => item instanceof HTMLElement && (item.id == "edit-button" || item.getAttribute("slot") == "edit-button"));
-      if (targetEditButton != null) {
-        this.dispatchEvent(new CustomEvent("edit", { detail: { button: targetEditButton, item: this }, bubbles: true, composed: true }));
-        return;
-      }
-      if (this.getAttribute("select") ?? this.getAttribute("selectable") == null) {
-        return;
-      }
-      const selected = this.findElement("selected");
-      if (selected != null) {
-        const isSelected = this.classList.contains(_CaptionedThumbnailElement.selectedClassName);
-        const method = isSelected == selected.checked ? "click" : "input";
-        const mouseEvent = event;
-        const allowDefault = this.dispatchEvent(new CustomEvent("change", { bubbles: true, composed: true, cancelable: true, detail: { shiftKey: mouseEvent.shiftKey, ctrlKey: mouseEvent.ctrlKey, method } }));
-        console.log("allowDefault", allowDefault);
-        if (allowDefault == false) {
-          return;
-        }
-        if (isSelected == true) {
-          this.classList.remove(_CaptionedThumbnailElement.selectedClassName);
-          selected.checked = false;
-        } else {
-          this.classList.add(_CaptionedThumbnailElement.selectedClassName);
-          selected.checked = true;
-        }
-      }
-    });
+    this.addEventListener("click", this.#onClick.bind(this));
+    this.addEventListener("keydown", this.#onKeyDown.bind(this));
+    this.shadowRoot.querySelector("slot:not([name])").addEventListener("slotchange", this.#onSlotChange.bind(this));
+    const selected = this.findElement("selected");
+    if (selected != null) {
+      selected.addEventListener("input", this.#selectedInput_onInput.bind(this));
+    }
   }
   #applyPartAttributes() {
     const identifiedElements = [...this.shadowRoot.querySelectorAll("[id]")];
@@ -96,6 +58,65 @@ var CaptionedThumbnailElement = class _CaptionedThumbnailElement extends HTMLEle
     for (let i = 0; i < classedElements.length; i++) {
       classedElements[i].part.add(...classedElements[i].classList);
     }
+  }
+  #onSlotChange(_event) {
+    this.#updateTitle();
+  }
+  #onClick(event) {
+    const targetEditButton = event.composedPath().find((item) => item instanceof HTMLElement && (item.id == "edit-button" || item.getAttribute("slot") == "edit-button"));
+    if (targetEditButton != null) {
+      this.dispatchEvent(new CustomEvent("edit", { detail: { button: targetEditButton, item: this }, bubbles: true, composed: true }));
+      event.stopPropagation();
+      return;
+    }
+    if (this.getAttribute("select") ?? this.getAttribute("selectable") == null) {
+      return;
+    }
+    const targetSelectInput = event.composedPath().find((item) => item instanceof HTMLInputElement && (item.id == "selected" || item.getAttribute("slot") == "selected"));
+    const method = targetSelectInput == null ? "click" : "input";
+    const mouseEvent = event;
+    const allowDefault = this.dispatchEvent(new CustomEvent(
+      "change",
+      {
+        bubbles: true,
+        composed: true,
+        cancelable: true,
+        detail: {
+          shiftKey: mouseEvent.shiftKey,
+          ctrlKey: mouseEvent.ctrlKey,
+          method
+        }
+      }
+    ));
+    if (allowDefault == false) {
+      return;
+    }
+    this.toggleSelection();
+  }
+  #onKeyDown(event) {
+    if (this.shadowRoot.activeElement == this.findElement("figure") && KEYCODE_SELECTION_MAP.indexOf(event.code) != -1) {
+      event.preventDefault();
+      const allowDefault = this.dispatchEvent(new CustomEvent(
+        "change",
+        {
+          bubbles: true,
+          composed: true,
+          cancelable: true,
+          detail: {
+            method: event.code
+          }
+        }
+      ));
+      if (allowDefault == false) {
+        return;
+      }
+      this.toggleSelection();
+    }
+  }
+  #selectedInput_onInput(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isSelected = event.target.checked;
   }
   #updateTitle() {
     let title = "";
@@ -113,11 +134,35 @@ var CaptionedThumbnailElement = class _CaptionedThumbnailElement extends HTMLEle
     }
     this.title = title;
   }
+  #select() {
+    if (this.getAttribute("select") ?? this.getAttribute("selectable") == null) {
+      return;
+    }
+    this.setAttribute("aria-selected", "option");
+  }
+  #deselect() {
+    this.removeAttribute("aria-selected");
+  }
+  toggleSelection() {
+    if (this.isSelected == true) {
+      this.#deselect();
+    } else {
+      this.#select();
+    }
+  }
+  #updateSelectionIndicators() {
+    const isSelected = this.isSelected;
+    const selected = this.findElement("selected");
+    if (selected != null) {
+      selected.checked = this.isSelected;
+    }
+    this.classList.toggle(_CaptionedThumbnailElement.selectedClassName, isSelected);
+  }
   updateImage(source) {
     let imageIcon = this.findElement("image-icon");
     imageIcon.src = source;
   }
-  static observedAttributes = ["label", "src", "select", "selectable"];
+  static observedAttributes = ["label", "src", "select", "selectable", "aria-selected"];
   attributeChangedCallback(attributeName, _oldValue, newValue) {
     if (attributeName == "label") {
       const textNodes = Array.from(this.childNodes).filter((item) => item.nodeType == Node.TEXT_NODE);
@@ -130,6 +175,8 @@ var CaptionedThumbnailElement = class _CaptionedThumbnailElement extends HTMLEle
       this.updateImage(newValue);
     } else if (attributeName == "select" || attributeName == "selectable") {
       this.findElement("figure").tabIndex = 0;
+    } else if (attributeName == "aria-selected") {
+      this.#updateSelectionIndicators();
     }
   }
 };

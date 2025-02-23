@@ -1,6 +1,7 @@
 import style from './captioned-thumbnail.css?raw';
 import html from './captioned-thumbnail.html?raw';
 
+const KEYCODE_SELECTION_MAP = ['Space', 'Enter'];
 
 const COMPONENT_STYLESHEET = new CSSStyleSheet();
 COMPONENT_STYLESHEET.replaceSync(style);
@@ -24,28 +25,12 @@ export class CaptionedThumbnailElement extends HTMLElement
     static selectedClassName: string = 'selected';
     get isSelected()
     {
-        return this.classList.contains(CaptionedThumbnailElement.selectedClassName);
+        return this.hasAttribute('aria-selected');
     }
     set isSelected(value: boolean)
     {
-        if(this.getAttribute('select') ?? this.getAttribute('selectable') == null)
-        {
-            return;
-        }
-
-        if(value == true)
-        {
-            this.classList.add(CaptionedThumbnailElement.selectedClassName);
-        }
-        else
-        {
-            this.classList.remove(CaptionedThumbnailElement.selectedClassName);
-        }
-        const selected = this.findElement<HTMLInputElement>('selected')
-        if(selected != null)
-        {
-            selected.checked = value;
-        }
+        if(value == true) { this.#select(); }
+        else { this.#deselect(); }
     }
 
     constructor()
@@ -57,61 +42,16 @@ export class CaptionedThumbnailElement extends HTMLElement
         this.#applyPartAttributes();
         this.#updateTitle();
 
-        this.shadowRoot!.querySelector('slot:not([name])')!.addEventListener('slotchange', (event) =>
+        this.addEventListener('click', this.#onClick.bind(this));
+        this.addEventListener('keydown', this.#onKeyDown.bind(this));
+
+        this.shadowRoot!.querySelector('slot:not([name])')!.addEventListener('slotchange', this.#onSlotChange.bind(this));
+
+        const selected = this.findElement<HTMLInputElement>('selected');
+        if(selected != null)
         {
-            this.#updateTitle();
-        });
-
-        this.addEventListener('keydown', (event) =>
-        {
-            if(this.shadowRoot!.activeElement == this.findElement('figure') && event.code == "Space")
-            {
-                this.isSelected = !this.isSelected;
-            }
-        })
-
-        this.addEventListener('click', (event) =>
-        {
-            if(this.hasAttribute('stop-click') == true)
-            {
-                event.stopPropagation();
-            }
-
-            const targetEditButton = event.composedPath().find(item => item instanceof HTMLElement 
-            && (item.id == 'edit-button' || item.getAttribute('slot') == "edit-button"))
-            if(targetEditButton != null) {
-                this.dispatchEvent(new CustomEvent('edit', { detail: { button: targetEditButton, item: this }, bubbles: true, composed: true, }));
-                return;
-            }
-
-            if(this.getAttribute('select') ?? this.getAttribute('selectable') == null)
-            {
-                return;
-            }
-
-            const selected = this.findElement('selected') as HTMLInputElement;
-            if(selected != null)
-            {
-                const isSelected = (this.classList.contains(CaptionedThumbnailElement.selectedClassName));
-                const method = (isSelected == selected.checked) ? "click" : "input";
-
-                const mouseEvent = (event as MouseEvent);
-                const allowDefault = this.dispatchEvent(new CustomEvent('change', { bubbles: true, composed: true, cancelable: true, detail: { shiftKey: mouseEvent.shiftKey, ctrlKey: mouseEvent.ctrlKey, method  }}));
-                console.log('allowDefault', allowDefault);
-                if(allowDefault == false) { return; }
-                if(isSelected == true)
-                {
-                    this.classList.remove(CaptionedThumbnailElement.selectedClassName);
-                    selected.checked = false;
-                }
-                else
-                {
-                    this.classList.add(CaptionedThumbnailElement.selectedClassName);
-                    selected.checked = true;
-                }
-            }
-        });
-        
+            selected.addEventListener('input', this.#selectedInput_onInput.bind(this))
+        }
     }
     #applyPartAttributes()
     {
@@ -125,6 +65,71 @@ export class CaptionedThumbnailElement extends HTMLElement
         {
             classedElements[i].part.add(...classedElements[i].classList);
         }
+    }
+
+    #onSlotChange(_event: Event)
+    {
+        this.#updateTitle();
+    }
+    #onClick(event: Event)
+    {
+        const targetEditButton = event.composedPath().find(item => item instanceof HTMLElement 
+        && (item.id == 'edit-button' || item.getAttribute('slot') == "edit-button"));
+        if(targetEditButton != null) {
+            this.dispatchEvent(new CustomEvent('edit', { detail: { button: targetEditButton, item: this }, bubbles: true, composed: true, }));
+            event.stopPropagation();
+            return;
+        }
+
+        if(this.getAttribute('select') ?? this.getAttribute('selectable') == null)
+        {
+            return;
+        }
+        
+        const targetSelectInput = event.composedPath().find(item => item instanceof HTMLInputElement 
+        && (item.id == 'selected' || item.getAttribute('slot') == "selected"));
+        const method = (targetSelectInput == null) ? "click" : "input";
+        const mouseEvent = (event as MouseEvent);
+        const allowDefault = this.dispatchEvent(new CustomEvent('change', 
+        { 
+            bubbles: true,
+            composed: true,
+            cancelable: true,
+            detail:
+            {
+                shiftKey: mouseEvent.shiftKey,
+                ctrlKey: mouseEvent.ctrlKey,
+                method
+            }
+        }));
+        if(allowDefault == false) { return; }
+        this.toggleSelection();
+    }
+    #onKeyDown(event: KeyboardEvent)
+    {
+        if(this.shadowRoot!.activeElement == this.findElement('figure') && KEYCODE_SELECTION_MAP.indexOf(event.code) != -1)
+        {
+            event.preventDefault();
+            const allowDefault = this.dispatchEvent(new CustomEvent('change', 
+            { 
+                bubbles: true,
+                composed: true,
+                cancelable: true,
+                detail:
+                {
+                    method: event.code
+                }
+            }));
+            if(allowDefault == false) { return; }
+            this.toggleSelection();
+        }
+    }
+    #selectedInput_onInput(event: Event)
+    {
+        event.preventDefault();
+        event.stopPropagation();
+
+        this.isSelected = (event.target as HTMLInputElement).checked;
     }
 
     #updateTitle()
@@ -146,13 +151,43 @@ export class CaptionedThumbnailElement extends HTMLElement
         this.title = title;
     }
 
+    #select()
+    {
+        if(this.getAttribute('select') ?? this.getAttribute('selectable') == null)
+        {
+            return;
+        }
+        this.setAttribute('aria-selected', 'option');
+    }
+    #deselect()
+    {
+        this.removeAttribute('aria-selected');
+    }
+    toggleSelection()
+    {
+        if(this.isSelected == true) { this.#deselect(); }
+        else { this.#select(); }
+    }
+
+    #updateSelectionIndicators()
+    {
+        const isSelected = this.isSelected;
+
+        const selected = this.findElement<HTMLInputElement>('selected');
+        if(selected != null)
+        {
+            selected.checked = this.isSelected;
+        }
+        this.classList.toggle(CaptionedThumbnailElement.selectedClassName, isSelected);
+    }
+
     updateImage(source: string)
     {
         let imageIcon = this.findElement<HTMLImageElement>('image-icon')!;
         imageIcon.src = source;
     }
 
-    static observedAttributes = [ 'label', 'src', 'select', 'selectable' ];
+    static observedAttributes = [ 'label', 'src', 'select', 'selectable', 'aria-selected' ];
     attributeChangedCallback(attributeName: string, _oldValue: string, newValue: string) 
     {
         if(attributeName == 'label')
@@ -171,6 +206,10 @@ export class CaptionedThumbnailElement extends HTMLElement
         else if(attributeName == 'select' || attributeName == 'selectable')
         {
             this.findElement('figure').tabIndex = 0;
+        }
+        else if(attributeName == 'aria-selected')
+        {
+            this.#updateSelectionIndicators();
         }
     }
 }

@@ -7,6 +7,7 @@ declare class CaptionedThumbnailElement extends HTMLElement {
     get isSelected(): boolean;
     set isSelected(value: boolean);
     constructor();
+    toggleSelection(): void;
     updateImage(source: string): void;
     static observedAttributes: string[];
     attributeChangedCallback(attributeName: string, _oldValue: string, newValue: string): void;
