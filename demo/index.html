@@ -90,13 +90,13 @@
                     <li>The <code>selected</code> slot has been provided as a <code>&lt;span&gt;</code> element, to replace an <code>&lt;input&gt;</code> element.</li>
                     <li>The <code>icon</code> slot has been provided as a <code>&lt;span&gt;</code> element with text content instead of using an image.</li>
                     <li>The <code>edit-button</code> slot has been provided as an <code>&gt;button&gt;</code> element with a text label, instead of an icon label.</li>
-                    <li>The <code>label</code> slot has been provided as an <code>&lt;input&gt;</code> element instead of a <code>&lt;figcaption&gt;</code> element.</li>
+                    <li>The <code>caption</code> slot has been provided as an <code>&lt;input&gt;</code> element instead of a <code>&lt;figcaption&gt;</code> element.</li>
                 </ul>
                 <div class="example">
                     <captioned-thumbnail edit select>
                         <span slot="selected">t</span>
                         <span slot="icon">i</span>
-                        <input slot="label" style="color:red" value="Caption" />
+                        <input slot="caption" style="color:red" value="Caption" />
                         <button slot="edit-button" part="edit-button">Edit</button>
                     </captioned-thumbnail>
                 </div>
@@ -233,14 +233,14 @@
                 <p>The <code>&lt;captioned-thumbnail&gt;</code> element can be used within other components, but it is expected that the element will be composed - including its slots - by the implementing component.</p>
                 <p>Any slots passed down through <code>&lt;slot&gt;</code> elements can only be manipulated by forwarding the expected slots in the shadow dom of the parent component.</p>
                 <p>To demonstrate this, note that the first entry does not pass any slots, and appears regularly. The second passes slots for the label and edit button. The third example passes in the icon slot. Each of these examples only work because they are being handled by the <code>&lt;shadow-wrapper-container&gt;</code> and <code>&lt;shadow-wrapper&gt;</code> elements, during the <code>slotchange</code> events.</p>
-                <p>Note that the actual slotted elements, themselves, need to be added to a deafult <code>&lt;slot&gt;</code> element in the wrapper container. This is due to the <code>slot</code> attribute being set, on each element, effectively making them invisible to the default slot in the wrapper container. To work around this, all subslot elements are added to a <code>&lt;slot&gt;</code> element, which is then handled by the wrapper element to assign the slots appropriately for the <code>&lt;captioned-thumbnail&gt;</code> element.</p>
+                <p>Note that the actual slotted elements, themselves, need to be added to a default <code>&lt;slot&gt;</code> element in the wrapper container. This is due to the <code>slot</code> attribute being set, on each element, effectively making them invisible to the default slot in the wrapper container. To work around this, all subslot elements are added to a <code>&lt;slot&gt;</code> element, which is then handled by the wrapper element to assign the slots appropriately for the <code>&lt;captioned-thumbnail&gt;</code> element.</p>
                 <p><code>event</code>s, unlike <code>slot</code>s, work just fine with nesting. This is demonstrated by each component still triggering events simply by listening to the example element, showing that even deeply nested events still bubble through to the light DOM.</p>
             </div>
             <div class="example">
                 <shadow-wrapper-container></shadow-wrapper-container>
                 <shadow-wrapper-container>
                     <slot>
-                        <a slot="label" style="color:red">cap</a>
+                        <a slot="caption" style="color:red">Content</a>
                         <button slot="edit-button" part="edit-button">Edit</button>
                     </slot>
                 </shadow-wrapper-container>
