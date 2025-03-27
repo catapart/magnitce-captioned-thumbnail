@@ -1,5 +1,11 @@
 # @magnit-ce/captioned-thumbnail
 
+## 0.0.5
+
+### Patch Changes
+
+- 3a36452: updated click handling
+
 ## 0.0.4
 
 ### Patch Changes
